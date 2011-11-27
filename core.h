@@ -8,8 +8,8 @@
 #ifndef _CORE_H
 #define	_CORE_H
 
-template <typename C>
-C min(const C x, const C y) {
+template <typename C, typename T>
+C min(const C& x, const T& y) {
     return (x<y)?x:y;
 }
 
@@ -20,7 +20,7 @@ C max(const C& x, const T& y) {
 
 #define MIN -1000L
 #define MAX 1000L
-#define MAXDEPTH 11
+#define MAXDEPTH 16
 
 #define YES 1
 #define NO 0
@@ -31,6 +31,7 @@ C max(const C& x, const T& y) {
 #define DRAWWIN 4
 #define WIN 5
 #define LOSSWIN 6
+#define UNKNOWN -2000
 
 #define FULL -1
 #define EMPTY 0

@@ -8,35 +8,14 @@
 #include "BitBoard.h"
 #include <sstream>
 
-inline int pop4(unsigned long long x, unsigned long long y,
-                unsigned long long u, unsigned long long v)
-{
-   static long long m1 = 0x5555555555555555LL,
-         m2 = 0x3333333333333333LL,
-         m3 = 0x0F0F0F0F0F0F0F0FLL,
-         m4 = 0x000000FF000000FFLL;
-
-    x = x - ((x >> 1) & m1);
-    y = y - ((y >> 1) & m1);
-    u = u - ((u >> 1) & m1);
-    v = v - ((v >> 1) & m1);
-    x = (x & m2) + ((x >> 2) & m2);
-    y = (y & m2) + ((y >> 2) & m2);
-    u = (u & m2) + ((u >> 2) & m2);
-    v = (v & m2) + ((v >> 2) & m2);
-    x = x + y;
-    u = u + v;
-    x = (x & m3) + ((x >> 4) & m3);
-    u = (u & m3) + ((u >> 4) & m3);
-    x = x + u;
-    x = x + (x >> 8);
-    x = x + (x >> 16);
-    x = x & m4;
-    x = x + (x >> 32);
-    return x & 0x000001FF;
+inline int bitcount(bitboard n) {
+    int count = 0;
+    while (n > 0) {
+        count += (n & 1);
+        n >>= 1;
+    }
+    return count;
 }
-
-inline int bitcount(bitboard& num) { return pop4(num, num^1, ~num, num|1); }
 
 BitBoard::BitBoard() : swap(false) { reset(); }
 
@@ -74,7 +53,7 @@ void BitBoard::undo() {
     color[turn()] ^= (bitboard)1<<--height[n];
 }
 
-int utility(bitboard& board) {
+int utility(bitboard& board, bool comp) {
     int n1 = bitcount(board);
     bitboard vert = board & (board>>1);
     bitboard vert2 = (vert & (vert >> 1));
@@ -92,16 +71,17 @@ int utility(bitboard& board) {
     n3 += bitcount(diag2_2);
     n2 += bitcount(diag1);
     n2 += bitcount(diag2);
-    return n1 + n2*4 + n3*16;
+    return n1*((comp)?2:1) + n2*((comp)?4:2) + n3*((comp)?16:8);
 }
 
 int BitBoard::score() {
-    if (isGameover(color[turn()])) {
-        return LOSS;
-    } else if (isGameover(color[turn()^1])) {
-        return WIN;
+    if (isGameover(color[1])) {
+        return MAX;
+    } else if (isGameover(color[0])) {
+        return MIN;
     } else {
-        int score = utility(color[turn()^1]) - utility(color[turn()]);
+        int score = utility(color[1],true) - utility(color[0],false);
+        return score;
     }
 }
 
@@ -110,11 +90,11 @@ std::string BitBoard::show() {
     for (int x = 0; x < (WIDTH * 2 + 1); ++x)
         str << "_"; // top row
     str << std::endl;
-    bitboard n;
+    bitboard n = 0;
     for (int i = 0; i < HEIGHT; ++i) {
         str << "|";
         for (int j = 0; j < WIDTH; ++j) {
-            n = 1<<((HEIGHT - 1) + (H1 * j));
+            n = (bitboard)1<<((HEIGHT - 1) + (H1 * j)) - (i);
             str << ((color[0] & n) ? 'x' : (color[1] & n) ? 'o' : ' ');
             str << "|";
         }
@@ -127,5 +107,38 @@ std::string BitBoard::show() {
 }
 
 int BitBoard::quickmove() {
-    
+    int ret = -1;
+
+    int middle = (WIDTH / 2);
+
+    if (curDepth() == 0) {
+        ret = middle;
+    } else if (curDepth() == 1) {
+        ret = middle;
+        if (moves[0] == 1) ret = middle-1;
+        else if (moves[0] == 5) ret = middle+1;
+    } else if (curDepth() == (SIZE - 1)) {
+        for (short i = 0; i < WIDTH; ++i) {
+            if (height[i] < HEIGHT) {
+                ret = i;
+                break;
+            }
+        }
+    } else {
+        for (short i = 0; i < WIDTH && ret == -1; ++i) {
+            bitboard check_me = color[turn()] | (bitboard)1 << height[i];
+            if (isValid(check_me) && isGameover(check_me)) ret = i;
+        }
+        for (short i = 0; i < WIDTH && ret == -1; ++i) {
+            bitboard check_opp = color[turn()^1] | (bitboard)1 << height[i];
+            if (isValid(check_opp) && isGameover(check_opp)) ret = i;
+        }
+    }
+
+    if (ret != -1) return ret;
+
+    // opening book
+
+    return -1;
+
 }

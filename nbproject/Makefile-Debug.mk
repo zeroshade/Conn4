@@ -32,8 +32,9 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 # Object Files
 OBJECTFILES= \
 	${OBJECTDIR}/Board.o \
+	${OBJECTDIR}/core.o \
 	${OBJECTDIR}/_ext/home/zeroshade/Projects/Conn4/BitBoard.o \
-	${OBJECTDIR}/core.o
+	${OBJECTDIR}/_ext/home/zeroshade/Projects/Conn4/TranspositionTable.o
 
 # C Compiler Flags
 CFLAGS=
@@ -64,15 +65,20 @@ ${OBJECTDIR}/Board.o: nbproject/Makefile-${CND_CONF}.mk Board.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF $@.d -o ${OBJECTDIR}/Board.o Board.cpp
 
+${OBJECTDIR}/core.o: nbproject/Makefile-${CND_CONF}.mk core.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF $@.d -o ${OBJECTDIR}/core.o core.cpp
+
 ${OBJECTDIR}/_ext/home/zeroshade/Projects/Conn4/BitBoard.o: nbproject/Makefile-${CND_CONF}.mk /home/zeroshade/Projects/Conn4/BitBoard.cpp 
 	${MKDIR} -p ${OBJECTDIR}/_ext/home/zeroshade/Projects/Conn4
 	${RM} $@.d
 	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/home/zeroshade/Projects/Conn4/BitBoard.o /home/zeroshade/Projects/Conn4/BitBoard.cpp
 
-${OBJECTDIR}/core.o: nbproject/Makefile-${CND_CONF}.mk core.cpp 
-	${MKDIR} -p ${OBJECTDIR}
+${OBJECTDIR}/_ext/home/zeroshade/Projects/Conn4/TranspositionTable.o: nbproject/Makefile-${CND_CONF}.mk /home/zeroshade/Projects/Conn4/TranspositionTable.cpp 
+	${MKDIR} -p ${OBJECTDIR}/_ext/home/zeroshade/Projects/Conn4
 	${RM} $@.d
-	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF $@.d -o ${OBJECTDIR}/core.o core.cpp
+	$(COMPILE.cc) -g -I/usr/include/ -MMD -MP -MF $@.d -o ${OBJECTDIR}/_ext/home/zeroshade/Projects/Conn4/TranspositionTable.o /home/zeroshade/Projects/Conn4/TranspositionTable.cpp
 
 # Subprojects
 .build-subprojects:

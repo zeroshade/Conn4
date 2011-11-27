@@ -25,6 +25,8 @@
                    projectFiles="false">
       <itemPath>Makefile</itemPath>
     </logicalFolder>
+    <itemPath>/home/zeroshade/Projects/Conn4/TranspositionTable.cpp</itemPath>
+    <itemPath>/home/zeroshade/Projects/Conn4/TranspositionTable.h</itemPath>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
